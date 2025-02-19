@@ -1,101 +1,121 @@
-import Image from "next/image";
+"use client";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { CiSearch } from "react-icons/ci";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [day, setDay] = useState("1"); // Default day is set to "1"
+  const [cityImage, setCityImage] = useState(""); // State for storing the random city image URL
+  const [cityName, setCityName] = useState("Loading..."); // State for storing the city name
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  // List of cities to randomize the query
+  const cities = [
+    "New York",
+    "Paris",
+    "Tokyo",
+    "London",
+    "Sydney",
+    "Dubai",
+    "Singapore",
+    "Rome",
+    "Berlin",
+    "Toronto",
+  ];
+
+  // Function to fetch a random city image and its name
+  const fetchRandomCityImage = async () => {
+    const UNSPLASH_ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY; // Replace with your Unsplash Access Key
+
+    // Randomly select a city from the list
+    const randomCity = cities[Math.floor(Math.random() * cities.length)];
+    const url = `https://api.unsplash.com/photos/random?query=${randomCity}&orientation=landscape&client_id=${UNSPLASH_ACCESS_KEY}`;
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch image");
+      }
+      const data = await response.json();
+
+      // Extract image URL and city name (if available)
+      const imageUrl = data.urls.regular;
+      const location = data.location?.title || randomCity; // Use location title or fallback to the queried city
+
+      setCityImage(imageUrl);
+      setCityName(location);
+    } catch (error) {
+      console.error("Error fetching city image:", error);
+      setCityImage(
+        "https://via.placeholder.com/1920x1080?text=City+Image+Not+Found"
+      );
+      setCityName("Unknown City");
+    }
+  };
+
+  // Fetch a random city image on component mount
+  useEffect(() => {
+    fetchRandomCityImage();
+  }, []);
+
+  return (
+    <div
+      className="flex items-center justify-center w-full h-screen bg-cover bg-center relative"
+      style={{ backgroundImage: `url(${cityImage})` }}
+    >
+      {/* Dark Shade Overlay */}
+      <div
+        className="absolute inset-0 bg-black bg-opacity-50"
+        aria-hidden="true"
+      ></div>
+
+      <div className="text-center z-10">
+        <h1 className="text-4xl font-semibold text-white">
+          Discover your next adventure
+        </h1>
+        <p className="text-white mt-2">
+          Plan, explore, and create unforgettable memories
+        </p>
+
+        {/* Search Bar and Day Selector */}
+        <div className="flex items-center mt-4 p-4 bg-white border rounded-lg gap-3 z-10">
+          {/* Search Input */}
+          <div className="flex-1 flex items-center gap-2">
+            <CiSearch size={20} />
+            <Input
+              type="text"
+              placeholder="Search City"
+              className="flex-1 shadow-none font-light p-3"
+              aria-label="Search for a city"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+
+          {/* Day Selector */}
+          <Select value={day} onValueChange={setDay}>
+            <SelectTrigger className="w-24">
+              <SelectValue placeholder="Select Day" />
+            </SelectTrigger>
+            <SelectContent>
+              {[...Array(7).keys()].map((num) => (
+                <SelectItem key={num + 1} value={(num + 1).toString()}>
+                  Day {num + 1}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+
+      {/* City Name Overlay */}
+      <div className="absolute bottom-4 right-4 bg-black bg-opacity-75 text-white px-4 py-2 rounded-lg z-10">
+        {cityName}
+      </div>
     </div>
   );
 }
