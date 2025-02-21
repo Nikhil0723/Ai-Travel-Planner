@@ -44,9 +44,9 @@ interface ItineraryItem {
   additionalResources: AdditionalResources;
   day: number; 
   activityNumber: number;
-  startTime?: string; // Optional (e.g., "10:00 AM")
-  endTime?: string; // Optional (e.g., "12:00 PM")
-  transport?: string; // Optional (e.g., "Walk (10 min)", "Taxi (15 min, $5)")
+  startTime?: string; 
+  endTime?: string;
+  transport?: string;
   costEstimate?: string; // Optional (e.g., "$15 per person")
   nearbyRestaurants?: { name: string; url?: string }[]; // Optional list of food places
 }
