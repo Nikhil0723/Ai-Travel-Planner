@@ -1,10 +1,20 @@
-// src/components/TripCard.tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { Trip } from "@/types/Trip";
 import Link from "next/link";
+import { Trip } from "@/types/Trip";
 
 const TripCard = ({ trip }: { trip: Trip }) => {
   return (
@@ -13,9 +23,9 @@ const TripCard = ({ trip }: { trip: Trip }) => {
       <CardHeader>
         <CardTitle>{trip.title}</CardTitle>
         <CardDescription>
-          {trip.type === "single-city"
-            ? `${trip.city?.name}, ${trip.city?.countryCode}`
-            : `${trip.cities?.length} Cities, ${trip.cities?.[0]?.countryCode}`}
+          {trip.tripType === "single"
+            ? `${trip.cities[0].name}, ${trip.cities[0].country}`
+            : `${trip.cities.length} Cities, ${trip.cities[0].country}`}
         </CardDescription>
       </CardHeader>
 
@@ -26,15 +36,15 @@ const TripCard = ({ trip }: { trip: Trip }) => {
           className="h-48 bg-cover bg-center rounded-md mb-4"
           style={{
             backgroundImage: `url(${
-              trip.type === "single-city"
-                ? trip.city?.imageUrl || "https://via.placeholder.com/600x400"
-                : trip.cities?.[0]?.imageUrl || "https://via.placeholder.com/600x400"
+              trip.cities[0].imageUrl || "https://via.placeholder.com/600x400"
             })`,
           }}
         ></div>
 
         {/* Duration */}
-        <p className="text-sm text-gray-500 mb-2">{trip.duration}</p>
+        <p className="text-sm text-gray-500 mb-2">
+          {trip.cities.reduce((sum, city) => sum + city.duration, 0)} Days
+        </p>
 
         {/* Interests */}
         <div className="flex flex-wrap gap-2 mb-4">
@@ -46,7 +56,7 @@ const TripCard = ({ trip }: { trip: Trip }) => {
         </div>
 
         {/* Multi-City Tooltip */}
-        {trip.type === "multi-city" && (
+        {trip.tripType === "multi" && (
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -59,9 +69,9 @@ const TripCard = ({ trip }: { trip: Trip }) => {
             </TooltipTrigger>
             <TooltipContent>
               <ul className="space-y-1">
-                {trip.cities?.map((city) => (
-                  <li key={city.name}>
-                    {city.name}, {city.countryCode}
+                {trip.cities.map((city) => (
+                  <li key={city.id}>
+                    {city.name}, {city.country}
                   </li>
                 ))}
               </ul>
@@ -73,12 +83,13 @@ const TripCard = ({ trip }: { trip: Trip }) => {
       {/* Footer Section */}
       <CardFooter className="flex justify-between items-center">
         <div className="text-sm text-gray-500">
-          Created by{" "}
-          <a href={trip.createdBy.profileLink} className="underline" aria-label={`Profile of ${trip.createdBy.username}`}>
-            {trip.createdBy.username}
-          </a>
+          Created on {new Date(trip.createdAt).toLocaleDateString()}
         </div>
-        <Link aria-label="View details of this trip" href={`/iternary/${trip.id}`}>
+        <Link
+          aria-label="View details of this trip"
+          href={`/itinerary/${trip.id}`}
+          className="text-blue-500 underline"
+        >
           View Details
         </Link>
       </CardFooter>
