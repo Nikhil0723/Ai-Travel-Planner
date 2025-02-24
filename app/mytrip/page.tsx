@@ -1,7 +1,6 @@
 // src/pages/page.tsx
 import React from "react";
 import TripCard from "@/components/TripCard";
-import { dummyTripData } from "@/data/TripDummyData";
 
 const Page = () => {
   return (
@@ -11,9 +10,9 @@ const Page = () => {
 
       {/* Grid Layout for Trip Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-        {dummyTripData.map((trip) => (
-          <TripCard key={trip.id} trip={trip} />
-        ))}
+       
+          <TripCard />
+       
       </div>
     </section>
   );

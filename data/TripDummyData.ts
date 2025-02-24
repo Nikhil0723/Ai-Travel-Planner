@@ -1,119 +1,143 @@
-export  const dummyTripData = [{
-  "id": "trip-mumbai-001",
-  "title": "Mumbai Exploration",
-  "startDate": "2025-05-15",
-  "createdAt": "2025-02-21T12:30:00Z",
-  "tripType": "single",
-  "interests": ["Culture", "History", "Food", "Beaches"],
-  "cities": [
-    {
-      "id": "city-mumbai-001",
-      "name": "Mumbai",
-      "country": "India",
-      "coordinates": { "lat": 19.076, "lng": 72.8777 },
-      "duration": 3,
-      "interests": ["Culture", "History", "Food", "Beaches"],
-      "temperatureData": [
-        { "date": "2025-05-15", "temperature": 32 },
-        { "date": "2025-05-16", "temperature": 33 },
-        { "date": "2025-05-17", "temperature": 31 }
-      ],
-      "monthlyInsights": [
-        { "month": "May", "description": "Hot and humid; best to explore in the early mornings and evenings." }
-      ],
-      "places": [
-        {
-          "id": "place-001",
-          "name": "Gateway of India",
-          "description": "Iconic landmark overlooking the Arabian Sea, rich in historical significance.",
-          "coordinates": { "lat": 18.921984, "lng": 72.834654 },
-          "imageUrl": "https://example.com/gateway-of-india.jpg",
-          "entryFee": "Free",
-          "bestTimeToVisit": "Morning",
-          "openingHours": "Open 24 hours",
-          "day": 1,
-          "activityNumber": 1,
-          "schedule": { "startTime": "9:00 AM", "endTime": "10:30 AM" },
-          "transport": "Taxi/Auto",
-          "costEstimate": "INR 200"
-        },
-        {
-          "id": "place-002",
-          "name": "Chhatrapati Shivaji Maharaj Terminus",
-          "description": "UNESCO-listed railway station known for its Victorian Gothic architecture.",
-          "coordinates": { "lat": 18.9402, "lng": 72.8354 },
-          "imageUrl": "https://example.com/cst.jpg",
-          "entryFee": "Free",
-          "bestTimeToVisit": "Afternoon",
-          "openingHours": "Open 24 hours",
-          "day": 1,
-          "activityNumber": 2,
-          "schedule": { "startTime": "11:00 AM", "endTime": "12:30 PM" },
-          "transport": "Local Train/Taxi",
-          "costEstimate": "INR 100"
-        },
-        {
-          "id": "place-003",
-          "name": "Juhu Beach",
-          "description": "Famous beach known for its street food, sunsets, and celebrity residences.",
-          "coordinates": { "lat": 19.088, "lng": 72.8263 },
-          "imageUrl": "https://example.com/juhu-beach.jpg",
-          "entryFee": "Free",
-          "bestTimeToVisit": "Evening",
-          "openingHours": "Open 24 hours",
-          "day": 1,
-          "activityNumber": 3,
-          "schedule": { "startTime": "5:00 PM", "endTime": "7:00 PM" },
-          "transport": "Taxi/Auto",
-          "costEstimate": "INR 150"
-        },
-        {
-          "id": "place-004",
-          "name": "Elephanta Caves",
-          "description": "Ancient rock-cut caves dedicated to Lord Shiva, accessible via ferry.",
-          "coordinates": { "lat": 18.9633, "lng": 72.9316 },
-          "imageUrl": "https://example.com/elephanta-caves.jpg",
-          "entryFee": "INR 40 (Indians), INR 600 (Foreigners)",
-          "bestTimeToVisit": "Morning",
-          "openingHours": "9:00 AM - 5:30 PM",
-          "day": 2,
-          "activityNumber": 1,
-          "schedule": { "startTime": "9:30 AM", "endTime": "12:00 PM" },
-          "transport": "Ferry",
-          "costEstimate": "INR 200"
-        },
-        {
-          "id": "place-005",
-          "name": "Marine Drive",
-          "description": "Famous 3.6 km boulevard along the coastline, known for its evening views.",
-          "coordinates": { "lat": 18.9431, "lng": 72.8233 },
-          "imageUrl": "https://example.com/marine-drive.jpg",
-          "entryFee": "Free",
-          "bestTimeToVisit": "Evening",
-          "openingHours": "Open 24 hours",
-          "day": 2,
-          "activityNumber": 2,
-          "schedule": { "startTime": "5:30 PM", "endTime": "7:00 PM" },
-          "transport": "Taxi/Auto",
-          "costEstimate": "INR 100"
-        },
-        {
-          "id": "place-006",
-          "name": "Siddhivinayak Temple",
-          "description": "Famous Hindu temple dedicated to Lord Ganesha.",
-          "coordinates": { "lat": 19.0176, "lng": 72.8305 },
-          "imageUrl": "https://example.com/siddhivinayak.jpg",
-          "entryFee": "Free",
-          "bestTimeToVisit": "Morning",
-          "openingHours": "5:30 AM - 10:00 PM",
-          "day": 3,
-          "activityNumber": 1,
-          "schedule": { "startTime": "8:00 AM", "endTime": "9:30 AM" },
-          "transport": "Taxi/Auto",
-          "costEstimate": "INR 150"
+import { Trip } from "@/types/Trip";
+
+
+export const dubaiTrip: Trip = {
+  id: "dubai-2024",
+  title: "Ultimate Dubai Experience",
+  startDate: "2024-01-15",
+  createdAt: "2023-12-01T10:00:00Z",
+  interests: ["modern architecture", "luxury", "desert adventures"],
+  city: {
+    id: "dubai-uae",
+    name: "Dubai",
+    country: "United Arab Emirates",
+    coordinates: { lat: 25.276987, lng: 55.296249 },
+    duration: 5,
+    itinerary: [
+      {
+        id: "day1-act1",
+        name: "Burj Khalifa",
+        description: "Visit the world's tallest building and observation deck",
+        coordinates: { lat: 25.1975, lng: 55.2744 },
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Burj_Khalifa_%2816261395556%29.jpg",
+        day: 1,
+        activityNumber: 1,
+        tips: [
+          {
+            heading: "Best Time",
+            content: "Visit at sunset for stunning views"
+          }
+        ],
+        additionalResources: {
+          googleImageSearchUrl: "https://www.google.com/search?q=burj+khalifa&tbm=isch",
+          youtubeVideos: ["https://www.youtube.com/watch?v=2aBTO1a0J8w"]
         }
-      ]
-    }
-  ]
-}
-]
+      },
+      {
+        id: "day1-act2",
+        name: "Dubai Mall",
+        description: "Explore the world's largest shopping mall",
+        coordinates: { lat: 25.1972, lng: 55.2794 },
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/07/The_Dubai_Mall.jpg",
+        day: 1,
+        activityNumber: 2,
+        additionalResources: {
+          googleImageSearchUrl: "https://www.google.com/search?q=dubai+mall&tbm=isch",
+          youtubeVideos: ["https://www.youtube.com/watch?v=GJM7aCasta8"]
+        }
+      },
+      {
+        id: "day2-act1",
+        name: "Desert Safari",
+        description: "Experience dune bashing and Bedouin camp dinner",
+        coordinates: { lat: 24.9500, lng: 55.4500 },
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/74/Dubai_Desert_Safari.jpg",
+        day: 2,
+        activityNumber: 1,
+        tips: [
+          {
+            heading: "Clothing",
+            content: "Wear comfortable clothes and closed shoes"
+          }
+        ],
+        additionalResources: {
+          googleImageSearchUrl: "https://www.google.com/search?q=dubai+desert+safari&tbm=isch",
+          youtubeVideos: ["https://www.youtube.com/watch?v=6XaxjWqWnWs"]
+        }
+      },
+      {
+        id: "day3-act1",
+        name: "Palm Jumeirah",
+        description: "Visit the iconic palm-shaped artificial island",
+        coordinates: { lat: 25.1123, lng: 55.1389 },
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/09/Palm_Jumeirah%2C_Dubai-UAE.jpg",
+        day: 3,
+        activityNumber: 1,
+        additionalResources: {
+          googleImageSearchUrl: "https://www.google.com/search?q=palm+jumeirah&tbm=isch",
+          youtubeVideos: ["https://www.youtube.com/watch?v=6XaxjWqWnWs"]
+        }
+      },
+      {
+        id: "day3-act2",
+        name: "Atlantis The Palm",
+        description: "Luxury resort with aquatic attractions",
+        coordinates: { lat: 25.1305, lng: 55.1178 },
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/6a/Atlantis_The_Palm%2C_Dubai_%2849508241132%29.jpg",
+        day: 3,
+        activityNumber: 2,
+        additionalResources: {
+          googleImageSearchUrl: "https://www.google.com/search?q=atlantis+the+palm&tbm=isch",
+          youtubeVideos: ["https://www.youtube.com/watch?v=3VX6ZvEOV7w"]
+        }
+      },
+      {
+        id: "day4-act1",
+        name: "Dubai Frame",
+        description: "150m tall picture frame with panoramic views",
+        coordinates: { lat: 25.2333, lng: 55.3044 },
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0d/Dubai_Frame_2020.jpg",
+        day: 4,
+        activityNumber: 1,
+        additionalResources: {
+          googleImageSearchUrl: "https://www.google.com/search?q=dubai+frame&tbm=isch",
+          youtubeVideos: ["https://www.youtube.com/watch?v=8VtG1lh0fV4"]
+        }
+      },
+      {
+        id: "day4-act2",
+        name: "Dubai Creek",
+        description: "Historic saltwater creek with traditional abras",
+        coordinates: { lat: 25.2703, lng: 55.3075 },
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/5b/Dubai_Creek_%2833616505414%29.jpg",
+        day: 4,
+        activityNumber: 2,
+        additionalResources: {
+          googleImageSearchUrl: "https://www.google.com/search?q=dubai+creek&tbm=isch",
+          youtubeVideos: ["https://www.youtube.com/watch?v=6dJ9VkLv5t4"]
+        }
+      },
+      {
+        id: "day5-act1",
+        name: "Global Village",
+        description: "Cultural and entertainment destination",
+        coordinates: { lat: 25.0525, lng: 55.3628 },
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Global_Village_Dubai_entrance.jpg",
+        day: 5,
+        activityNumber: 1,
+        tips: [
+          {
+            heading: "Timing",
+            content: "Visit in the evening for cooler temperatures"
+          }
+        ],
+        additionalResources: {
+          googleImageSearchUrl: "https://www.google.com/search?q=global+village+dubai&tbm=isch",
+          youtubeVideos: ["https://www.youtube.com/watch?v=0K8qVv4t_9Q"]
+        }
+      }
+    ],
+    temperatureData: [],
+    monthlyInsights: []
+  }
+} as Trip;

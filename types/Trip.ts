@@ -1,87 +1,111 @@
-// Coordinates type
 interface Coordinates {
   lat: number;
   lng: number;
+  altitude?: number;
 }
 
-// Daily temperature forecast for a city
 interface TemperatureData {
-  date: string; // YYYY-MM-DD
-  temperature: number; // Temperature in °C
+  date: string;
+  temperature: number;
+  condition: 'sunny' | 'rainy' | 'cloudy' | 'snow' | 'windy';
+  humidity?: number;
+  precipitationChance?: number;
+  uvIndex?: number;
 }
 
-// Monthly city insights (weather & activities)
 interface MonthlyCityInfo {
-  month: string; // e.g., "January"
-  description: string; // Weather and activity summary
+  month: string;
+  description: string;
+  averageHigh?: number;
+  averageLow?: number;
+  rainfall?: number;
+  events?: string[];
 }
 
-// Additional resources like Google Images & YouTube videos
 interface AdditionalResources {
   googleImageSearchUrl: string;
-  youtubeVideos: string[]; // List of video URLs
+  youtubeVideos: string[];
+  officialWebsite?: string;
+  bookingLinks?: string[];
 }
 
-// Travel tips for each place
 interface TravelTip {
   heading: string;
   content: string;
+  category?: 'safety' | 'budget' | 'cultural' | 'logistical';
 }
 
-// Itinerary item for a place
-interface ItineraryItem {
+interface TransportOption {
+  mode: 'walk' | 'taxi' | 'public-transport' | 'car' | 'bicycle';
+  duration: string;
+  costEstimate?: string;
+  bookingUrl?: string;
+}
+
+export interface ItineraryItem {
   id: string;
-  name: string; 
+  name: string;
   description: string;
   coordinates: Coordinates;
   imageUrl: string;
+  type?: 'attraction' | 'museum' | 'nature' | 'shopping' | 'landmark';
   entryFee?: string;
-  bestTimeToVisit?: string;
   openingHours?: string;
-  accessibility?: string;
-  photographyInfo?: string;
+  accessibility?: {
+    wheelchairAccessible: boolean;
+    elevatorAvailable?: boolean;
+  };
+  photographyInfo?: {
+    restrictions?: string[];
+    bestSpots?: string[];
+  };
   tips: TravelTip[];
   additionalResources: AdditionalResources;
-  day: number; 
+  day: number;
   activityNumber: number;
-  startTime?: string; 
+  startTime?: string;
   endTime?: string;
-  transport?: string;
-  costEstimate?: string; // Optional (e.g., "$15 per person")
-  nearbyRestaurants?: { name: string; url?: string }[]; // Optional list of food places
+  transportOptions?: TransportOption[];
+  nearbyRestaurants?: {
+    name: string;
+    cuisine?: string[];
+    priceRange?: '$' | '$$' | '$$$';
+  }[];
 }
 
-// City details (includes weather & itinerary)
 interface TripCity {
   id: string;
   name: string;
   country: string;
   coordinates: Coordinates;
-  duration: number; 
-  interests: string[]; 
-  itinerary: ItineraryItem[]; 
-  temperatureData: TemperatureData[]; 
-  monthlyInsights: MonthlyCityInfo[]; 
+  duration: number;
+  itinerary: ItineraryItem[];
+  temperatureData: TemperatureData[];
+  monthlyInsights: MonthlyCityInfo[];
+  publicTransportTips?: string;
 }
 
-// Base trip structure
 interface BaseTrip {
   id: string;
   title: string;
   startDate: string;
   createdAt: string;
   interests: string[];
+  coverImageUrl?: string;
+  totalBudgetEstimate?: string;
 }
 
-// Single-city trip
-interface SingleCityTrip extends BaseTrip {
+ export interface SingleCityTrip extends BaseTrip {
   city: TripCity;
 }
 
-// Multi-city trip
 interface MultiCityTrip extends BaseTrip {
   cities: TripCity[];
+  interCityTravel?: {
+    fromCityId: string;
+    toCityId: string;
+    transportOptions: TransportOption[];
+  }[];
 }
 
-// Combined type for a trip
 export type Trip = SingleCityTrip | MultiCityTrip;

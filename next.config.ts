@@ -2,12 +2,7 @@ import { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "source.unsplash.com",
-      },
-    ],
+    domains: ["upload.wikimedia.org"], // Add the allowed domain here
   },
 };
 
