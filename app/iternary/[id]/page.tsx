@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import Activity from "@/components/Iternary/Activity";
 import { Trip } from "@/types/Trip";
-import { dubaiTrip } from "@/data/TripDummyData";
 import Map from "@/components/Map/Map";
+import mumbaiTrip from "@/data/TripDummyData";
 
 export default function ItineraryPage() {
   const [activeTab, setActiveTab] = useState<string>("activity");
-  const [trip, setTrip] = useState<Trip>(dubaiTrip);
+  const [trip, setTrip] = useState<Trip>(mumbaiTrip);
   return (
     <div className="container mx-auto py-4">
       <div className="bg-blue-500 text-white flex flex-col items-center justify-center h-72 shadow-lg">
