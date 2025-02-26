@@ -1,11 +1,10 @@
-"use client";
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import type { Trip, ItineraryItem } from "@/types/Trip";
+import { dummyTrip } from "@/types/Trip";
 
 // Fix Leaflet marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -18,60 +17,57 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-interface MapComponentProps {
-  trip: Trip;
-}
+const MapComponent = ({ trip }) => {
+  if (!trip) return <p>No trip data available.</p>;
 
-const Map = ({ trip }: MapComponentProps) => {
-  // Get unique cities and days from itinerary
-  const { cities, days, activitiesByDay } = useMemo(() => {
-    const citiesSet = new Set<string>();
-    const daysSet = new Set<number>();
-    const activitiesByDay: Record<number, ItineraryItem[]> = {};
+  let dayOffset = 0;
+  const daysMap = new Map();
+  const citiesSet = new Set();
 
-    trip.city.itinerary.forEach((activity) => {
-      const cityName = activity.city?.name || trip.city.name;
-      citiesSet.add(cityName);
-      daysSet.add(activity.day);
+  trip.cities.forEach((city) => {
+    citiesSet.add(city.name);
+    city.itinerary.forEach((activity) => {
+      if (!activity) return;
 
-      if (!activitiesByDay[activity.day]) {
-        activitiesByDay[activity.day] = [];
+      const globalDay = dayOffset + activity.day;
+      if (!daysMap.has(globalDay)) {
+        daysMap.set(globalDay, []);
       }
-      activitiesByDay[activity.day].push(activity);
+      daysMap.get(globalDay)?.push({ activity, cityName: city.name });
     });
+    dayOffset += city.duration;
+  });
 
-    return {
-      cities: Array.from(citiesSet),
-      days: Array.from(daysSet),
-      activitiesByDay,
-    };
-  }, [trip]);
+  const cities = Array.from(citiesSet);
+  const days = Array.from(daysMap.keys()).sort((a, b) => a - b);
 
-  // State for filters
-  const [selectedCities, setSelectedCities] = useState<string[]>(cities);
-  const [selectedDays, setSelectedDays] = useState<number[]>(days);
+  const [selectedCities, setSelectedCities] = useState(cities);
+  const [selectedDays, setSelectedDays] = useState(days);
 
-  // Filtered activities
   const filteredActivities = useMemo(() => {
-    return trip.city.itinerary.filter((activity) => {
-      const activityCity = activity.city?.name || trip.city.name;
-      return (
-        selectedDays.includes(activity.day) &&
-        selectedCities.includes(activityCity)
+    return [...daysMap.entries()].reduce((acc, [day, activities]) => {
+      if (!selectedDays.includes(day)) return acc;
+      acc.push(
+        ...activities.filter(({ cityName }) =>
+          selectedCities.includes(cityName)
+        )
       );
-    });
-  }, [trip, selectedDays, selectedCities]);
+      return acc;
+    }, []);
+  }, [selectedDays, selectedCities]);
 
-  // Reset filters when trip changes
   useEffect(() => {
     setSelectedCities(cities);
     setSelectedDays(days);
-  }, [trip, cities, days]);
+  }, [trip]);
 
   return (
     <div className="relative h-[calc(100vh-4rem)] w-full">
       <MapContainer
-        center={[trip.city.coordinates.lat, trip.city.coordinates.lng]}
+        center={[
+          trip.cities[0].coordinates.lat,
+          trip.cities[0].coordinates.lng,
+        ]}
         zoom={12}
         className="h-full w-full"
       >
@@ -80,7 +76,7 @@ const Map = ({ trip }: MapComponentProps) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        {filteredActivities.map((activity) => (
+        {filteredActivities.map(({ activity, cityName }) => (
           <Marker
             key={activity.id}
             position={[activity.coordinates.lat, activity.coordinates.lng]}
@@ -89,7 +85,7 @@ const Map = ({ trip }: MapComponentProps) => {
               <div className="space-y-2 min-w-[200px]">
                 <h3 className="font-semibold">{activity.name}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {activity.description}
+                  {activity.description || "No description available"}
                 </p>
                 <div className="flex flex-wrap gap-1 mt-2">
                   {activity.entryFee && (
@@ -101,7 +97,7 @@ const Map = ({ trip }: MapComponentProps) => {
                     Day {activity.day}
                   </span>
                   <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
-                    {activity.city?.name || trip.city.name}
+                    {cityName}
                   </span>
                 </div>
               </div>
@@ -112,7 +108,6 @@ const Map = ({ trip }: MapComponentProps) => {
 
       {/* Control Panel */}
       <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-lg shadow-xl max-w-xs w-full space-y-4 border z-[1000]">
-        {/* Days Filter */}
         <div className="space-y-3">
           <h3 className="font-semibold text-base mb-2">Filter by Days</h3>
           {days.map((day) => (
@@ -127,13 +122,12 @@ const Map = ({ trip }: MapComponentProps) => {
                 }}
               />
               <Label htmlFor={`day-${day}`} className="text-sm font-medium">
-                Day {day} ({activitiesByDay[day].length} activities)
+                Day {day} ({daysMap.get(day)?.length || 0} activities)
               </Label>
             </div>
           ))}
         </div>
 
-        {/* Cities Filter */}
         <div className="space-y-3">
           <h3 className="font-semibold text-base mb-2">Filter by Cities</h3>
           {cities.map((city) => (
@@ -158,4 +152,4 @@ const Map = ({ trip }: MapComponentProps) => {
   );
 };
 
-export default Map;
+export default MapComponent;

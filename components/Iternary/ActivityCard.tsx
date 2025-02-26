@@ -7,61 +7,69 @@ import {
 } from "../ui/accordion";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Trip, ItineraryItem } from "@/types/Trip";
+import { Trip } from "@/types/Trip";
 
-interface ActivityCardProps {
-  trip: Trip;
-}
+const TripActivities = ({ trip } :{trip : Trip}) => {
+  if (!trip) return <p>No trip data available.</p>;
 
-const ActivityCard = ({ trip }: ActivityCardProps) => {
-  // Group activities by day
-  const groupActivitiesByDay = (itinerary: ItineraryItem[]) => {
-    return itinerary.reduce((acc, activity) => {
-      const day = activity.day;
-      if (!acc[day]) acc[day] = [];
-      acc[day].push(activity);
-      return acc;
-    }, {} as Record<number, ItineraryItem[]>);
-  };
+  let dayOffset = 0;
+  const daysMap = new Map();
 
-  const daysActivities = groupActivitiesByDay(trip?.city?.itinerary);
+  trip.cities.forEach((city) => {
+    city.itinerary.forEach((activity) => {
+      if (!activity) return;
+
+      const globalDay = dayOffset + activity.day;
+      if (!daysMap.has(globalDay)) {
+        daysMap.set(globalDay, []);
+      }
+      daysMap.get(globalDay)?.push({ activity, cityName: city.name });
+    });
+    dayOffset += city.duration;
+  });
 
   return (
     <Accordion type="multiple" className="w-full">
-      {Object.entries(daysActivities).map(([day, activities]) => (
+      {[...daysMap.entries()].map(([day, dayData]) => (
         <AccordionItem key={day} value={`day-${day}`}>
           <AccordionTrigger className="hover:no-underline px-4">
             <div className="flex items-center gap-3">
               <h2 className="text-lg font-semibold">Day {day}</h2>
-              <p className="text-sm text-muted-foreground">
-                {trip.city.name}, {trip.city.country} 🇦🇪
-              </p>
             </div>
           </AccordionTrigger>
-
           <AccordionContent className="px-4">
-            {activities.map((activity) => (
+            {dayData.map(({ activity, cityName }) => (
               <div
                 key={activity.id}
                 className="grid grid-cols-[120px_1fr_auto] gap-4 p-4 mb-4 rounded-lg border hover:bg-muted/50 transition-colors"
               >
-                {activity.imageUrl && (
+                {/* Image Section */}
+                {activity.imageUrl ? (
                   <div className="relative aspect-square overflow-hidden rounded-lg">
                     <Image
                       src={activity.imageUrl}
-                      alt={activity.name}
+                      alt={activity.name || "Activity image"}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 120px"
                     />
                   </div>
+                ) : (
+                  <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center text-sm">
+                    No Image
+                  </div>
                 )}
 
+                {/* Main Content */}
                 <div className="space-y-2">
-                  <h3 className="font-medium">{activity.name}</h3>
+                  <h3 className="font-medium">
+                    {activity.name || "Unknown Activity"}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    {activity.description}
+                    {activity.description || "No description available"}
                   </p>
+                  <p className="text-xs text-gray-500">City: {cityName}</p>
+
                   <div className="flex gap-2 mt-2">
                     {activity.entryFee && (
                       <Button variant="outline" size="sm">
@@ -130,4 +138,4 @@ const ActivityCard = ({ trip }: ActivityCardProps) => {
   );
 };
 
-export default ActivityCard;
+export default TripActivities;

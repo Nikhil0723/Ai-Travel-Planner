@@ -85,7 +85,13 @@ interface TripCity {
   publicTransportTips?: string;
 }
 
-interface BaseTrip {
+interface InterCityTravel {
+  fromCityId: string;
+  toCityId: string;
+  transportOptions: TransportOption[];
+}
+
+export interface Trip {
   id: string;
   title: string;
   startDate: string;
@@ -93,19 +99,6 @@ interface BaseTrip {
   interests: string[];
   coverImageUrl?: string;
   totalBudgetEstimate?: string;
+  cities: TripCity[]; // Single or multiple cities in an array
+  transportBetweenCities?: InterCityTravel[]; // Only applies if it's a multi-city trip
 }
-
- export interface SingleCityTrip extends BaseTrip {
-  city: TripCity;
-}
-
-interface MultiCityTrip extends BaseTrip {
-  cities: TripCity[];
-  interCityTravel?: {
-    fromCityId: string;
-    toCityId: string;
-    transportOptions: TransportOption[];
-  }[];
-}
-
-export type Trip = SingleCityTrip | MultiCityTrip;
